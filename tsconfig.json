@@ -3,17 +3,29 @@
     "module": "commonjs",
     "target": "es5",
     "outDir": "dist",
-    "lib": [ "es2015", "DOM" ],
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016",
+      "es2017"
+    ],
     "rootDir": "src",
+    "types": ["node"],
     "noImplicitAny": false,
     "sourceMap": true,
-    "types": ["node"],
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
+    "removeComments": true,
+    "declaration": true,
   },
   "exclude": [
     "node_modules",
     "./src/**/*.spec.ts",
     "./src/__test__"
-  ]
+  ],
+  "include": [
+    "src/**/*"
+  ],
+  "compileOnSave": false,
+  "buildOnSave": false
 }

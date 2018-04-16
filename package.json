@@ -4,8 +4,8 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "watch-build": "./node_modules/.bin/tsc -w",
-    "build": "npm run clean && ./node_modules/.bin/tsc",
+    "watch-build": "webpack -d --colors --watch",
+    "build": "npm run clean && webpack -p",
     "clean": "rm -rf dist"
   },
   "repository": {
@@ -19,9 +19,13 @@
   },
   "homepage": "https://gitlab.com/reapp/teleport-generator-react-next#README",
   "devDependencies": {
+    "awesome-typescript-loader": "^5.0.0",
+    "source-map-loader": "^0.2.3",
     "source-map-support": "^0.5.4",
     "ts-node": "^5.0.1",
-    "typescript": "^2.7.2"
+    "typescript": "^2.7.2",
+    "webpack": "^4.5.0",
+    "webpack-cli": "^2.0.14"
   },
   "dependencies": {
     "@types/node": "^9.6.0",
