@@ -12,7 +12,7 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var teleport_lib_js_1 = require("../../teleport-lib-js");
 var package_1 = require("../renderers/package");
-var ReactProjectGenerator = /** @class */ (function (_super) {
+var ReactProjectGenerator = (function (_super) {
     __extends(ReactProjectGenerator, _super);
     function ReactProjectGenerator(generator, componentGenerator) {
         var _this = _super.call(this, generator) || this;

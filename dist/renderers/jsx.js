@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-// tslint:disable-next-line:max-line-length
 function jsx(name, childrenJSX, classNames, isRoot, styles, props) {
     var classNamesString = '';
     if (classNames) {

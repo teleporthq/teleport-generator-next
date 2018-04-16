@@ -6,7 +6,6 @@ var renderDependency = function (libraryName, types) {
 };
 function component(name, jsx, dependencies, styles, props) {
     if (dependencies === void 0) { dependencies = {}; }
-    // tslint:disable-next-line:max-line-length
     var dependenciesArray = Object.keys(dependencies).map(function (libraryName) { return renderDependency(libraryName, dependencies[libraryName]); });
     var propsString = '';
     if (props && props.length > 0) {
