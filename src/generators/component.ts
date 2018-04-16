@@ -159,7 +159,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
     const styles = stylingResults.styles
     content = stylingResults.content
 
-    const { css } = teleport.transformers.styles.jstocss(styles)
+    const { css } = teleport.transformers.styles.jsstocss.stylesheet(styles)
 
     const jsx = this.renderComponentJSX(content, true, css)
 
