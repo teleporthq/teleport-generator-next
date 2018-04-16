@@ -166,7 +166,7 @@ var NextComponentGenerator = /** @class */ (function (_super) {
         var stylingResults = this.processStyles(content, {});
         var styles = stylingResults.styles;
         content = stylingResults.content;
-        var css = teleport_lib_js_1.default.transformers.styles.jstocss(styles).css;
+        var css = teleport_lib_js_1.default.transformers.styles.jsstocss.stylesheet(styles).css;
         var jsx = this.renderComponentJSX(content, true, css);
         var props = (component.editableProps ? Object.keys(component.editableProps) : null);
         // return this.templates.component(name, jsx, dependencies, css, props)
