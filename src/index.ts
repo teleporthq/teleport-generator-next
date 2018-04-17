@@ -1,13 +1,20 @@
-import { Generator, RenderResult } from '../teleport-lib-js'
-import ReactComponentGenerator from './generators/component'
-import ReactProjectGenerator from './generators/project'
+import { Target, Generator, RenderResult } from '../teleport-lib-js'
+import NextComponentGenerator from './generators/component'
+import NextProjectGenerator from './generators/project'
 
 export default class TeleportGeneratorNext extends Generator {
+  public name: string
+  public type: string = 'generator'
+  public targetName: string
+  public target: Target
+  public componentGenerator: NextComponentGenerator
+  public projectGenerator: NextProjectGenerator
+
   constructor() {
     super('next-generator', 'next')
 
-    this.componentGenerator = new ReactComponentGenerator(this)
-    this.projectGenerator = new ReactProjectGenerator(this, this.componentGenerator)
+    this.componentGenerator = new NextComponentGenerator(this)
+    this.projectGenerator = new NextProjectGenerator(this, this.componentGenerator)
   }
 
   public generateComponent(component: any, options: any): RenderResult {

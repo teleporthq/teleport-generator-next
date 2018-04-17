@@ -1,4 +1,4 @@
-import * as prettier from 'prettier'
+import * as prettier from 'prettier-standalone'
 
 export default function packageRenderer(project: any): any {
   const pkg = {
@@ -18,5 +18,6 @@ export default function packageRenderer(project: any): any {
       "react-dom": "^16.3.0"
     }
   }
-  return prettier.format(JSON.stringify(pkg), { parser: 'json' })
+
+  return JSON.stringify(pkg, null, 2)
 }

@@ -17,6 +17,7 @@ var TeleportGeneratorNext = (function (_super) {
     __extends(TeleportGeneratorNext, _super);
     function TeleportGeneratorNext() {
         var _this = _super.call(this, 'next-generator', 'next') || this;
+        _this.type = 'generator';
         _this.componentGenerator = new component_1.default(_this);
         _this.projectGenerator = new project_1.default(_this, _this.componentGenerator);
         return _this;

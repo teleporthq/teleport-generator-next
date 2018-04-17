@@ -28,8 +28,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
-var deepmerge = require("deepmerge");
-var prettier = require("prettier");
+var prettier = require("prettier-standalone");
 var teleport_lib_js_1 = require("../../teleport-lib-js");
 var jsx_1 = require("../renderers/jsx");
 var component_1 = require("../renderers/component");
@@ -43,7 +42,7 @@ function findNextIndexedKeyInObject(object, key) {
     }
     return key + "_" + i;
 }
-var NextComponentGenerator = /** @class */ (function (_super) {
+var NextComponentGenerator = (function (_super) {
     __extends(NextComponentGenerator, _super);
     function NextComponentGenerator(generator) {
         return _super.call(this, generator) || this;
@@ -52,13 +51,11 @@ var NextComponentGenerator = /** @class */ (function (_super) {
         var _this = this;
         var content = JSON.parse(JSON.stringify(componentContent));
         if (content.style) {
-            var className = content.name;
+            var className = content.name || findNextIndexedKeyInObject(styles, content.type);
             styles[className] = content.style;
             delete content.style;
             content.className = [className];
-            // @todo: handle platform
         }
-        // if has children, do the same for children
         if (content.children && content.children.length > 0) {
             if (typeof content.children !== "string") {
                 content.children = content.children.map(function (child) {
@@ -83,10 +80,8 @@ var NextComponentGenerator = /** @class */ (function (_super) {
             var mapping = this.generator.target.map(source, type);
             if (mapping) {
                 if (mapping.library) {
-                    // if the library is not yet in the dependecnies, add it
                     if (!dependencies[mapping.library])
                         dependencies[mapping.library] = [];
-                    // if the type is not yet in the deps for the current library, add it
                     if (dependencies[mapping.library].indexOf(mapping.type) < 0)
                         dependencies[mapping.library].push(mapping.type);
                 }
@@ -95,7 +90,6 @@ var NextComponentGenerator = /** @class */ (function (_super) {
                 console.error("could not map '" + type + "' from '" + source + "' for target '" + this.generator.targetName + "'");
             }
         }
-        // if there are childrens, get their deps and merge them with the current ones
         if (children && children.length > 0 && typeof children !== "string") {
             var childrenDependenciesArray = children.map(function (child) { return _this.computeDependencies(child); });
             if (childrenDependenciesArray.length) {
@@ -103,7 +97,6 @@ var NextComponentGenerator = /** @class */ (function (_super) {
                     Object.keys(childrenDependency).forEach(function (childrenDependencyLibrary) {
                         if (!dependencies[childrenDependencyLibrary])
                             dependencies[childrenDependencyLibrary] = [];
-                        // tslint:disable-next-line:max-line-length
                         dependencies[childrenDependencyLibrary] = _.union(dependencies[childrenDependencyLibrary], childrenDependency[childrenDependencyLibrary]);
                     });
                 });
@@ -115,10 +108,7 @@ var NextComponentGenerator = /** @class */ (function (_super) {
     NextComponentGenerator.prototype.renderComponentJSX = function (content, isRoot, styles) {
         var _this = this;
         if (isRoot === void 0) { isRoot = false; }
-        var source = content.source, type = content.type, className = content.className, props = __rest(content
-        // retieve the target type from the lib
-        , ["source", "type", "className"]);
-        // retieve the target type from the lib
+        var source = content.source, type = content.type, className = content.className, props = __rest(content, ["source", "type", "className"]);
         var mapping = null;
         var mappedType = type;
         if (source !== 'components') {
@@ -126,11 +116,9 @@ var NextComponentGenerator = /** @class */ (function (_super) {
             if (mapping)
                 mappedType = mapping.type;
         }
-        // there are cases when no children are passed via structure, so the deconstruction will fail
         var children = null;
         if (props.children)
             children = props.children;
-        // remove the children from props
         delete props.children;
         var childrenJSX = [];
         if (children && children.length > 0) {
@@ -150,14 +138,13 @@ var NextComponentGenerator = /** @class */ (function (_super) {
         if (Array.isArray(childrenJSX)) {
             childrenJSX = childrenJSX.join('');
         }
-        var name = props.name, componentProps = props.props, otherProps = __rest(props, ["name", "props"]); // this is to cover img uri props; aka static props
+        var name = props.name, componentProps = props.props, otherProps = __rest(props, ["name", "props"]);
         var mappedProps = __assign({}, componentProps, otherProps);
         if (mapping && typeof mapping.props === 'function') {
             mappedProps = mapping.props(mappedProps);
         }
         return jsx_1.default(mappedType, childrenJSX, className, isRoot, styles, mappedProps);
     };
-    // tslint:disable-next-line:no-shadowed-variable
     NextComponentGenerator.prototype.generate = function (component, options) {
         if (options === void 0) { options = {}; }
         var name = component.type;
@@ -169,12 +156,8 @@ var NextComponentGenerator = /** @class */ (function (_super) {
         var css = teleport_lib_js_1.default.transformers.styles.jsstocss.stylesheet(styles).css;
         var jsx = this.renderComponentJSX(content, true, css);
         var props = (component.editableProps ? Object.keys(component.editableProps) : null);
-        // return this.templates.component(name, jsx, dependencies, css, props)
-        // tslint:disable-next-line:max-line-length
         var result = new teleport_lib_js_1.RenderResult();
-        result.addFile(_.upperFirst(component.name) + ".js", 
-        // tslint:disable-next-line:max-line-length
-        prettier.format(component_1.default(name, jsx, dependencies, css, props), deepmerge(prettier_1.default, options.prettier || {})));
+        result.addFile(_.upperFirst(component.name) + ".js", prettier.format(component_1.default(name, jsx, dependencies, css, props), prettier_1.default));
         return result;
     };
     return NextComponentGenerator;

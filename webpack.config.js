@@ -20,6 +20,9 @@ module.exports = () => {
       // Add '.ts' and '.tsx' as resolvable extensions.
       extensions: [".ts", ".tsx", ".js", ".json"]
     },
+    node: {
+      fs: 'empty'
+    },
 
     module: {
       rules: [

@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import * as deepmerge from 'deepmerge'
-import * as prettier from 'prettier'
+import * as prettier from 'prettier-standalone'
 
 import teleport, { ComponentGenerator, Generator, RenderResult } from '../../teleport-lib-js'
 import TeleportGeneratorNext from '../index'
@@ -28,7 +28,8 @@ export default class NextComponentGenerator extends ComponentGenerator {
     const content = JSON.parse(JSON.stringify(componentContent))
 
     if (content.style) {
-      const className = content.name
+      const className = content.name || findNextIndexedKeyInObject(styles, content.type)
+
       styles[className] = content.style
       delete content.style
       content.className = [className]
@@ -171,7 +172,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
     result.addFile(
       `${_.upperFirst(component.name)}.js`,
       // tslint:disable-next-line:max-line-length
-      prettier.format(COMPONENTrenderer(name, jsx, dependencies, css, props), deepmerge(prettierOptions, options.prettier || {}))
+      prettier.format(COMPONENTrenderer(name, jsx, dependencies, css, props), prettierOptions)
     )
 
     return result

@@ -1,5 +1,5 @@
 import * as _ from 'lodash'
-import * as prettier from 'prettier'
+import * as prettier from 'prettier-standalone'
 import { ProjectGenerator, Generator, RenderResult } from '../../teleport-lib-js'
 import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
@@ -18,11 +18,14 @@ export default class ReactProjectGenerator extends ProjectGenerator {
     const { name, components, pages } = project
 
     const result = new RenderResult()
+    const pkg = packageRenderer(project)
+
     result.addFile(
       'package.json',
-      packageRenderer(project)
+      pkg
     )
 
+    console.log('after pkg render')
     if (components) {
       Object.keys(components).map(componentName => {
         const component = components[componentName]
