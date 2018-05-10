@@ -1,5 +1,5 @@
 {
-  "name": "teleport-generator-react-next",
+  "name": "teleport-generator-next",
   "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
@@ -10,14 +10,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@gitlab.com/reapp/teleport-generator-react-next.git"
+    "url": "git+ssh://git@gitlab.com/teleporthq/teleport-generator-next.git"
   },
   "author": "Cristian Moldovan",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/reapp/teleport-generator-react-next/issues"
+    "url": "https://gitlab.com/teleporthq/teleport-generator-next/issues"
   },
-  "homepage": "https://gitlab.com/reapp/teleport-generator-react-next#README",
+  "homepage": "https://gitlab.com/teleporthq/teleport-generator-next#README",
   "devDependencies": {
     "source-map-support": "^0.5.4",
     "ts-node": "^5.0.1",
