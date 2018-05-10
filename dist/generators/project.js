@@ -10,8 +10,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var teleport_lib_js_1 = require("../../teleport-lib-js");
+var teleport_1 = require("../teleport");
 var package_1 = require("../renderers/package");
+var ProjectGenerator = teleport_1.default.ProjectGenerator, Generator = teleport_1.default.Generator, RenderResult = teleport_1.default.RenderResult;
 var ReactProjectGenerator = (function (_super) {
     __extends(ReactProjectGenerator, _super);
     function ReactProjectGenerator(generator, componentGenerator) {
@@ -23,7 +24,7 @@ var ReactProjectGenerator = (function (_super) {
         var _this = this;
         if (options === void 0) { options = {}; }
         var name = project.name, components = project.components, pages = project.pages;
-        var result = new teleport_lib_js_1.RenderResult();
+        var result = new RenderResult();
         var pkg = package_1.default(project);
         result.addFile('package.json', pkg);
         console.log('after pkg render');
@@ -51,6 +52,6 @@ var ReactProjectGenerator = (function (_super) {
         if (archive === void 0) { archive = false; }
     };
     return ReactProjectGenerator;
-}(teleport_lib_js_1.ProjectGenerator));
+}(ProjectGenerator));
 exports.default = ReactProjectGenerator;
 //# sourceMappingURL=project.js.map

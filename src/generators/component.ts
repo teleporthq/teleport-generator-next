@@ -2,11 +2,13 @@ import * as _ from 'lodash'
 import * as deepmerge from 'deepmerge'
 import * as prettier from 'prettier-standalone'
 
-import teleport, { ComponentGenerator, Generator, RenderResult } from '../../teleport-lib-js'
+import teleport from '../teleport'
 import TeleportGeneratorNext from '../index'
 import JSXrenderer from '../renderers/jsx'
 import COMPONENTrenderer from '../renderers/component'
 import prettierOptions from '../options/prettier'
+
+const { ComponentGenerator, Generator, RenderResult } = teleport
 
 function findNextIndexedKeyInObject(object, key) {
   if (! object[key]) return key

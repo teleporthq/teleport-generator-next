@@ -1,9 +1,11 @@
 import * as _ from 'lodash'
 import * as prettier from 'prettier-standalone'
-import { ProjectGenerator, Generator, RenderResult } from '../../teleport-lib-js'
+import teleport from '../teleport'
 import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
 import NextComponentGenerator from './component'
+
+const { ProjectGenerator, Generator, RenderResult } = teleport
 
 export default class ReactProjectGenerator extends ProjectGenerator {
   public generator: TeleportGeneratorNext

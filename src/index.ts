@@ -1,6 +1,8 @@
-import { Target, Generator, RenderResult } from '../teleport-lib-js'
+import teleport from './teleport'
 import NextComponentGenerator from './generators/component'
 import NextProjectGenerator from './generators/project'
+
+const { Target, Generator, RenderResult } = teleport
 
 export default class TeleportGeneratorNext extends Generator {
   public name: string
