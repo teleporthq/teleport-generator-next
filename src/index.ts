@@ -2,7 +2,7 @@ import * as teleport from 'teleport-lib-js'
 import NextComponentGenerator from './generators/component'
 import NextProjectGenerator from './generators/project'
 
-const { Target, Generator, RenderResult } = teleport
+const { Target, Generator, FileSet } = teleport
 
 export default class TeleportGeneratorNext extends Generator {
   public name: string
@@ -19,11 +19,11 @@ export default class TeleportGeneratorNext extends Generator {
     this.projectGenerator = new NextProjectGenerator(this, this.componentGenerator)
   }
 
-  public generateComponent(component: any, options: any): RenderResult {
+  public generateComponent(component: any, options: any): FileSet {
     return this.componentGenerator.generate(component, options)
   }
 
-  public generateProject(component: any, options: any): RenderResult {
+  public generateProject(component: any, options: any): FileSet {
     return this.projectGenerator.generate(component, options)
   }
 }

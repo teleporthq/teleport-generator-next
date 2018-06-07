@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var teleport = require("teleport-lib-js");
 var component_1 = require("./generators/component");
 var project_1 = require("./generators/project");
-var Target = teleport.Target, Generator = teleport.Generator, RenderResult = teleport.RenderResult;
+var Target = teleport.Target, Generator = teleport.Generator, FileSet = teleport.FileSet;
 var TeleportGeneratorNext = (function (_super) {
     __extends(TeleportGeneratorNext, _super);
     function TeleportGeneratorNext() {

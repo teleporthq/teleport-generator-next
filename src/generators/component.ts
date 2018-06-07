@@ -8,7 +8,7 @@ import JSXrenderer from '../renderers/jsx'
 import COMPONENTrenderer from '../renderers/component'
 import prettierOptions from '../options/prettier'
 
-const { ComponentGenerator, Generator, RenderResult } = teleport
+const { ComponentGenerator, Generator, FileSet } = teleport
 
 function findNextIndexedKeyInObject(object, key) {
   if (! object[key]) return key
@@ -151,7 +151,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
   }
 
   // tslint:disable-next-line:no-shadowed-variable
-  public generate(component: any, options: any = {}): RenderResult {
+  public generate(component: any, options: any = {}): FileSet {
     const { type: name } = component
 
     let { content } = component
@@ -170,7 +170,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
     // return this.templates.component(name, jsx, dependencies, css, props)
     // tslint:disable-next-line:max-line-length
-    const result = new RenderResult()
+    const result = new FileSet()
     result.addFile(
       `${_.upperFirst(component.name)}.js`,
       // tslint:disable-next-line:max-line-length

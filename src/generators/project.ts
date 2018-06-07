@@ -5,7 +5,7 @@ import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
 import NextComponentGenerator from './component'
 
-const { ProjectGenerator, Generator, RenderResult } = teleport
+const { ProjectGenerator, Generator, FileSet } = teleport
 
 export default class ReactProjectGenerator extends ProjectGenerator {
   public generator: TeleportGeneratorNext
@@ -16,10 +16,10 @@ export default class ReactProjectGenerator extends ProjectGenerator {
     this.componentGenerator = componentGenerator
   }
 
-  public generate(project: any, options: any = {}): RenderResult {
+  public generate(project: any, options: any = {}): FileSet {
     const { name, components, pages } = project
 
-    const result = new RenderResult()
+    const result = new FileSet()
     const pkg = packageRenderer(project)
 
     result.addFile(
@@ -55,8 +55,5 @@ export default class ReactProjectGenerator extends ProjectGenerator {
     }
 
     return result
-  }
-
-  public publish(path: string, archive: boolean = false): void {
   }
 }
