@@ -33,7 +33,7 @@ var teleport = require("teleport-lib-js");
 var jsx_1 = require("../renderers/jsx");
 var component_1 = require("../renderers/component");
 var prettier_1 = require("../options/prettier");
-var ComponentGenerator = teleport.ComponentGenerator, Generator = teleport.Generator, RenderResult = teleport.RenderResult;
+var ComponentGenerator = teleport.ComponentGenerator, Generator = teleport.Generator, FileSet = teleport.FileSet;
 function findNextIndexedKeyInObject(object, key) {
     if (!object[key])
         return key;
@@ -157,7 +157,7 @@ var NextComponentGenerator = (function (_super) {
         var css = teleport.transformers.styles.jsstocss.stylesheet(styles).css;
         var jsx = this.renderComponentJSX(content, true, css);
         var props = (component.editableProps ? Object.keys(component.editableProps) : null);
-        var result = new RenderResult();
+        var result = new FileSet();
         result.addFile(_.upperFirst(component.name) + ".js", prettier.format(component_1.default(name, jsx, dependencies, css, props), prettier_1.default));
         return result;
     };
