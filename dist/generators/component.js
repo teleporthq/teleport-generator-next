@@ -29,11 +29,10 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var prettier = require("prettier-standalone");
-var teleport = require("teleport-lib-js");
+var teleport_lib_js_1 = require("teleport-lib-js");
 var jsx_1 = require("../renderers/jsx");
 var component_1 = require("../renderers/component");
 var prettier_1 = require("../options/prettier");
-var ComponentGenerator = teleport.ComponentGenerator, Generator = teleport.Generator, FileSet = teleport.FileSet;
 function findNextIndexedKeyInObject(object, key) {
     if (!object[key])
         return key;
@@ -154,14 +153,14 @@ var NextComponentGenerator = (function (_super) {
         var stylingResults = this.processStyles(content, {});
         var styles = stylingResults.styles;
         content = stylingResults.content;
-        var css = teleport.transformers.styles.jsstocss.stylesheet(styles).css;
+        var css = teleport_lib_js_1.default.transformers.styles.jsstocss.stylesheet(styles).css;
         var jsx = this.renderComponentJSX(content, true, css);
         var props = (component.editableProps ? Object.keys(component.editableProps) : null);
-        var result = new FileSet();
+        var result = new teleport_lib_js_1.FileSet();
         result.addFile(_.upperFirst(component.name) + ".js", prettier.format(component_1.default(name, jsx, dependencies, css, props), prettier_1.default));
         return result;
     };
     return NextComponentGenerator;
-}(ComponentGenerator));
+}(teleport_lib_js_1.ComponentGenerator));
 exports.default = NextComponentGenerator;
 //# sourceMappingURL=component.js.map
