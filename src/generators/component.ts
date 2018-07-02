@@ -2,7 +2,7 @@ import * as _ from 'lodash'
 import * as deepmerge from 'deepmerge'
 import * as prettier from 'prettier-standalone'
 
-import teleport, { ComponentGenerator, Generator, FileSet } from 'teleport-lib-js'
+import teleport, { ComponentGenerator, Generator, FileSet } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorNext from '../index'
 import JSXrenderer from '../renderers/jsx'
 import COMPONENTrenderer from '../renderers/component'

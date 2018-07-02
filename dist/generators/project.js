@@ -10,7 +10,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var teleport = require("teleport-lib-js");
+var teleport = require("@teleporthq/teleport-lib-js");
 var package_1 = require("../renderers/package");
 var ProjectGenerator = teleport.ProjectGenerator, Generator = teleport.Generator, FileSet = teleport.FileSet;
 var ReactProjectGenerator = (function (_super) {

@@ -1,4 +1,4 @@
-import * as teleport from 'teleport-lib-js'
+import * as teleport from '@teleporthq/teleport-lib-js'
 import NextComponentGenerator from './generators/component'
 import NextProjectGenerator from './generators/project'
 

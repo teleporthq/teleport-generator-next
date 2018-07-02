@@ -1,6 +1,6 @@
 import * as _ from 'lodash'
 import * as prettier from 'prettier-standalone'
-import * as teleport from 'teleport-lib-js'
+import * as teleport from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
 import NextComponentGenerator from './component'

@@ -29,7 +29,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var prettier = require("prettier-standalone");
-var teleport_lib_js_1 = require("teleport-lib-js");
+var teleport_lib_js_1 = require("@teleporthq/teleport-lib-js");
 var jsx_1 = require("../renderers/jsx");
 var component_1 = require("../renderers/component");
 var prettier_1 = require("../options/prettier");

@@ -1,4 +1,4 @@
-import { ComponentGenerator, FileSet } from 'teleport-lib-js';
+import { ComponentGenerator, FileSet } from '@teleporthq/teleport-lib-js';
 import TeleportGeneratorNext from '../index';
 export default class NextComponentGenerator extends ComponentGenerator {
     generator: TeleportGeneratorNext;
