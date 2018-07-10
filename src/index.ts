@@ -1,14 +1,8 @@
-import * as teleport from '@teleporthq/teleport-lib-js'
+import { Generator, FileSet } from '@teleporthq/teleport-lib-js'
 import NextComponentGenerator from './generators/component'
 import NextProjectGenerator from './generators/project'
 
-const { Target, Generator, FileSet } = teleport
-
 export default class TeleportGeneratorNext extends Generator {
-  public name: string
-  public type: string = 'generator'
-  public targetName: string
-  public target: Target
   public componentGenerator: NextComponentGenerator
   public projectGenerator: NextProjectGenerator
 
@@ -19,7 +13,7 @@ export default class TeleportGeneratorNext extends Generator {
     this.projectGenerator = new NextProjectGenerator(this, this.componentGenerator)
   }
 
-  public generateComponent(component: any, options: any): FileSet {
+  public generateComponent<T, U>(component: T, options: U): FileSet {
     return this.componentGenerator.generate(component, options)
   }
 

@@ -5,8 +5,7 @@ const renderDependency = (libraryName, types) => {
 }
 
 export default function component(name: string, jsx: string, dependencies: any = {}, styles, props): any {
-  // tslint:disable-next-line:max-line-length
-  const dependenciesArray = Object.keys(dependencies).map(libraryName => renderDependency(libraryName, dependencies[libraryName] ))
+  const dependenciesArray = Object.keys(dependencies).map((libraryName) => renderDependency(libraryName, dependencies[libraryName]))
 
   let propsString = ''
   if (props && props.length > 0) {

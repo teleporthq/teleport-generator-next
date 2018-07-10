@@ -1,23 +1,18 @@
-// tslint:disable-next-line:max-line-length
 export default function jsx(name: string, childrenJSX?: string, classNames?: string[], isRoot?: boolean, styles?: string, props?: any): string {
   let classNamesString = ''
   if (classNames) {
-    if (classNames.length > 0) {
-      classNamesString = `className="${classNames.join(' ')}"`
-    } else {
-      classNamesString = `className="${classNames}"`
-    }
+    classNamesString = classNames.length > 0 ? `className="${classNames.join(' ')}"` : `className="${classNames}"`
   }
 
   const propsArray = []
   if (props) {
-    Object.keys(props).map(propName => {
+    Object.keys(props).map((propName) => {
       const propValue = props[propName]
       propsArray.push(`${propName}={${JSON.stringify(propValue)}}`)
     })
   }
 
-  const propsString = (propsArray.length ? ' ' + propsArray.join(' ') : '')
+  const propsString = propsArray.length ? ' ' + propsArray.join(' ') : ''
 
   if (isRoot) {
     return `

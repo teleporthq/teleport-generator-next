@@ -1,20 +1,19 @@
 import * as _ from 'lodash'
-import * as deepmerge from 'deepmerge'
 import * as prettier from 'prettier-standalone'
 
-import teleport, { ComponentGenerator, Generator, FileSet } from '@teleporthq/teleport-lib-js'
+import { ComponentGenerator, Generator, FileSet } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorNext from '../index'
 import JSXrenderer from '../renderers/jsx'
 import COMPONENTrenderer from '../renderers/component'
 import prettierOptions from '../options/prettier'
 
 function findNextIndexedKeyInObject(object, key) {
-  if (! object[key]) return key
-  let i=1
-  while (object[key + "_" + i] !== undefined) {
+  if (!object[key]) return key
+  let i = 1
+  while (object[key + '_' + i] !== undefined) {
     i++
   }
-  return key + "_" + i
+  return key + '_' + i
 }
 
 export default class NextComponentGenerator extends ComponentGenerator {
@@ -38,12 +37,12 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
     // if has children, do the same for children
     if (content.children && content.children.length > 0) {
-      if (typeof content.children !== "string") {
-        content.children = content.children.map( child => {
+      if (typeof content.children !== 'string') {
+        content.children = content.children.map((child) => {
           const childStyledResults = this.processStyles(child, styles)
           styles = {
             ...styles,
-            ...childStyledResults.styles
+            ...childStyledResults.styles,
           }
           return childStyledResults.content
         })
@@ -56,12 +55,12 @@ export default class NextComponentGenerator extends ComponentGenerator {
   public computeDependencies(content: any): any {
     const dependencies = {}
 
-    const { source, type, children, ...otherProps } = content
+    const { source, type, children } = content
 
     if (source && type) {
       if (source === 'components') {
         return {
-          [`components/${type}`]: [ type ]
+          [`components/${type}`]: [type],
         }
       }
 
@@ -70,29 +69,26 @@ export default class NextComponentGenerator extends ComponentGenerator {
       if (mapping) {
         if (mapping.library) {
           // if the library is not yet in the dependecnies, add it
-          if (! dependencies[mapping.library]) dependencies[mapping.library] = []
+          if (!dependencies[mapping.library]) dependencies[mapping.library] = []
 
           // if the type is not yet in the deps for the current library, add it
           if (dependencies[mapping.library].indexOf(mapping.type) < 0) dependencies[mapping.library].push(mapping.type)
         }
       } else {
+        // tslint:disable:no-console
         console.error(`could not map '${type}' from '${source}' for target '${this.generator.targetName}'`)
       }
     }
 
     // if there are childrens, get their deps and merge them with the current ones
-    if (children && children.length > 0 && typeof children !== "string") {
-      const childrenDependenciesArray = children.map(( child ) => this.computeDependencies(child))
+    if (children && children.length > 0 && typeof children !== 'string') {
+      const childrenDependenciesArray = children.map((child) => this.computeDependencies(child))
       if (childrenDependenciesArray.length) {
-        childrenDependenciesArray.forEach( childrenDependency => {
-          Object.keys(childrenDependency).forEach( childrenDependencyLibrary => {
-            if (! dependencies[childrenDependencyLibrary]) dependencies[childrenDependencyLibrary] = []
+        childrenDependenciesArray.forEach((childrenDependency) => {
+          Object.keys(childrenDependency).forEach((childrenDependencyLibrary) => {
+            if (!dependencies[childrenDependencyLibrary]) dependencies[childrenDependencyLibrary] = []
 
-            // tslint:disable-next-line:max-line-length
-            dependencies[childrenDependencyLibrary] = _.union(
-              dependencies[childrenDependencyLibrary],
-              childrenDependency[childrenDependencyLibrary]
-            )
+            dependencies[childrenDependencyLibrary] = _.union(dependencies[childrenDependencyLibrary], childrenDependency[childrenDependencyLibrary])
           })
         })
       }
@@ -121,15 +117,15 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
     let childrenJSX: any = []
     if (children && children.length > 0) {
-      if (typeof children === "string") {
-        if (children.indexOf("$props.") >= 0) {
+      if (typeof children === 'string') {
+        if (children.indexOf('$props.') >= 0) {
           const propKey = children.replace('$props.', '')
           childrenJSX = `{${propKey}}`
         } else {
           childrenJSX = children
         }
       } else {
-        childrenJSX = children.map( child => this.renderComponentJSX(child) )
+        childrenJSX = children.map((child) => this.renderComponentJSX(child))
       }
     }
 
@@ -148,7 +144,6 @@ export default class NextComponentGenerator extends ComponentGenerator {
     return JSXrenderer(mappedType, childrenJSX, className, isRoot, styles, mappedProps)
   }
 
-  // tslint:disable-next-line:no-shadowed-variable
   public generate(component: any, options: any = {}): FileSet {
     const { type: name } = component
 
@@ -160,20 +155,12 @@ export default class NextComponentGenerator extends ComponentGenerator {
     const styles = stylingResults.styles
     content = stylingResults.content
 
-    const { css } = teleport.transformers.styles.jsstocss.stylesheet(styles)
+    const jsx = this.renderComponentJSX(content)
 
-    const jsx = this.renderComponentJSX(content, true, css)
+    const props = component.editableProps ? Object.keys(component.editableProps) : null
 
-    const props = ( component.editableProps ? Object.keys(component.editableProps) : null )
-
-    // return this.templates.component(name, jsx, dependencies, css, props)
-    // tslint:disable-next-line:max-line-length
     const result = new FileSet()
-    result.addFile(
-      `${_.upperFirst(component.name)}.js`,
-      // tslint:disable-next-line:max-line-length
-      prettier.format(COMPONENTrenderer(name, jsx, dependencies, css, props), prettierOptions)
-    )
+    result.addFile(`${_.upperFirst(component.name)}.js`, prettier.format(COMPONENTrenderer(name, jsx, dependencies, styles, props), prettierOptions))
 
     return result
   }
