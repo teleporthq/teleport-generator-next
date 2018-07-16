@@ -1,4 +1,4 @@
-import * as _ from 'lodash'
+import upperFirst = require('lodash/upperFirst')
 
 const renderDependency = (libraryName, types) => {
   return `import { ${types.join(', ')} } from '${libraryName}'`
@@ -16,7 +16,7 @@ export default function component(name: string, jsx: string, dependencies: any =
     import React, { Component } from 'react'
     ${dependenciesArray.join(``)}
 
-    export default class ${_.upperFirst(name)} extends Component {
+    export default class ${upperFirst(name)} extends Component {
       render () {
         ${propsString}
         return (
