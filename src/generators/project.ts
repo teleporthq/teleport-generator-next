@@ -2,6 +2,7 @@ import { ProjectGenerator, Generator, FileSet } from '@teleporthq/teleport-lib-j
 import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
 import NextComponentGenerator from './component'
+import documentPage from '../templates/documentPage'
 
 export default class ReactProjectGenerator extends ProjectGenerator {
   public componentGenerator: NextComponentGenerator
@@ -11,8 +12,16 @@ export default class ReactProjectGenerator extends ProjectGenerator {
     this.componentGenerator = componentGenerator
   }
 
+  public getHtmlHeadItemAttributes(attributes) {
+    const attributesStrings = []
+    Object.keys(attributes).forEach((attributeName) => {
+      attributesStrings.push(`${attributeName}="${attributes[attributeName]}"`)
+    })
+    return attributesStrings.join(' ')
+  }
+
   public generate(project: any, options: any = {}): FileSet {
-    const { components, pages } = project
+    const { components, pages, targets } = project
 
     const result = new FileSet()
     const pkg = packageRenderer(project)
@@ -29,10 +38,30 @@ export default class ReactProjectGenerator extends ProjectGenerator {
       })
     }
 
+    if (targets && targets.web && targets.web.head) {
+      const headString = Object.keys(targets.web.head)
+        .map((tagName) => {
+          const tag = targets.web.head[tagName]
+          const { innerString, attributes } = tag
+          const attributesString = attributes ? this.getHtmlHeadItemAttributes(attributes) : ''
+
+          if (!innerString) {
+            return `<${tagName} ${attributesString}/>\n`
+          } else {
+            return `<${tagName} ${attributesString}>{\`
+              ${innerString}
+            \`}</${tagName}>\n`
+          }
+        })
+        .join('\n')
+
+      result.addFile(`pages/_document.js`, documentPage(headString))
+    }
+
     if (pages) {
       Object.keys(pages).map((pageName) => {
         const page = pages[pageName]
-        const pageResults = this.componentGenerator.generate(page)
+        const pageResults = this.componentGenerator.generate(page, { isPage: true })
         pageResults.getFileNames().map((fileName) => {
           result.addFile(`pages/${fileName}`, pageResults.getContent(fileName))
         })

@@ -1,3 +1,12 @@
+import styleTransformers from '@teleporthq/teleport-lib-js/dist/transformers/styles'
+const { jsstocss } = styleTransformers
+
+function buildStyleJsx(styles) {
+  return `<style jsx>{\`
+    ${jsstocss.stylesheet(styles).css}
+  \`}</style>`
+}
+
 export default function jsx(name: string, childrenJSX?: string, classNames?: string[], isRoot?: boolean, styles?: string, props?: any): string {
   let classNamesString = ''
   if (classNames) {
@@ -18,9 +27,7 @@ export default function jsx(name: string, childrenJSX?: string, classNames?: str
     return `
       <${name} ${classNamesString} ${propsString}>
         ${childrenJSX}
-        <style jsx>{\`
-          ${styles}
-        \`}</style>
+        ${buildStyleJsx(styles)}
       </${name}>`
   }
 

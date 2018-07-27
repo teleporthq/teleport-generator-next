@@ -1,4 +1,3 @@
-import upperFirst = require('lodash/upperFirst')
 import union = require('lodash/union')
 
 import { ComponentGenerator, Generator, FileSet } from '@teleporthq/teleport-lib-js'
@@ -51,45 +50,52 @@ export default class NextComponentGenerator extends ComponentGenerator {
     return { styles, content }
   }
 
-  public computeDependencies(content: any): any {
+  public computeDependencies(content: any, isPage: boolean): any {
     const dependencies = {}
 
-    const { source, type, children } = content
+    const { type, children } = content
+    let { source } = content
+
+    if (!source) source = 'components'
 
     if (source && type) {
       if (source === 'components') {
         return {
-          [`components/${type}`]: [type],
+          [`${isPage ? '../components/' : './'}${type}`]: [type],
         }
       }
 
-      const mapping = this.generator.target.map(source, type)
-
-      if (mapping) {
-        if (mapping.library) {
-          // if the library is not yet in the dependecnies, add it
-          if (!dependencies[mapping.library]) dependencies[mapping.library] = []
+      const elementMapping = this.generator.target.map(source, type)
+      // custom source case
+      if (elementMapping) {
+        if (elementMapping.source) {
+          // if the library is not yet in the dependencies, add it
+          if (!dependencies[elementMapping.source]) dependencies[elementMapping.source] = []
 
           // if the type is not yet in the deps for the current library, add it
-          if (dependencies[mapping.library].indexOf(mapping.type) < 0) dependencies[mapping.library].push(mapping.type)
+          if (dependencies[elementMapping.source].indexOf(elementMapping.type) < 0) dependencies[elementMapping.source].push(elementMapping.type)
         }
       } else {
         // tslint:disable:no-console
-        console.error(`could not map '${type}' from '${source}' for target '${this.generator.targetName}'`)
+        // console.error(`could not map '${type}' from '${source}' for target '${this.generator.targetName}'`)
       }
     }
 
     // if there are childrens, get their deps and merge them with the current ones
     if (children && children.length > 0 && typeof children !== 'string') {
-      const childrenDependenciesArray = children.map((child) => this.computeDependencies(child))
+      const childrenDependenciesArray = children.map((child) => this.computeDependencies(child, isPage))
       if (childrenDependenciesArray.length) {
         childrenDependenciesArray.forEach((childrenDependency) => {
           Object.keys(childrenDependency).forEach((childrenDependencyLibrary) => {
+            console.log(type, source, childrenDependenciesArray)
+            console.log('childrenDependency', childrenDependency, '\n')
+
             if (!dependencies[childrenDependencyLibrary]) dependencies[childrenDependencyLibrary] = []
 
             dependencies[childrenDependencyLibrary] = union(dependencies[childrenDependencyLibrary], childrenDependency[childrenDependencyLibrary])
           })
         })
+        console.log('dep ---', dependencies)
       }
     }
 
@@ -99,7 +105,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
   public renderComponentJSX(content: any, isRoot: boolean = false, styles?: any): any {
     const { source, type, className, ...props } = content
 
-    // retieve the target type from the lib
+    // retrieve the target type from the lib
     let mapping: any = null
     let mappedType: string = type
 
@@ -144,22 +150,23 @@ export default class NextComponentGenerator extends ComponentGenerator {
   }
 
   public generate(component: any, options: any = {}): FileSet {
-    const { type: name } = component
+    const { isPage } = options
+    const { name } = component
 
     let { content } = component
-    const dependencies = this.computeDependencies(content)
+    const dependencies = this.computeDependencies(content, isPage)
 
     const stylingResults = this.processStyles(content, {})
 
     const styles = stylingResults.styles
     content = stylingResults.content
 
-    const jsx = this.renderComponentJSX(content)
+    const jsx = this.renderComponentJSX(content, true, styles)
 
     const props = component.editableProps ? Object.keys(component.editableProps) : null
 
     const result = new FileSet()
-    result.addFile(`${upperFirst(component.name)}.js`, COMPONENTrenderer(name, jsx, dependencies, styles, props))
+    result.addFile(`${component.name}.js`, COMPONENTrenderer(name, jsx, dependencies, props))
 
     return result
   }
