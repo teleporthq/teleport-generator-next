@@ -10,7 +10,9 @@
     "types": ["node", "jest"],
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "noUnusedLocals": true
   },
   "exclude": [
     "node_modules",
