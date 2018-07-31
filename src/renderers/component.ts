@@ -5,8 +5,7 @@ const renderDependency = (libraryName, types) => {
     // next imports
     libraryName.indexOf('next/') === 0
 
-  const tmp = isDefaultExport ? `import ${types[0]} from '${libraryName}'` : `import { ${types.join(', ')} } from '${libraryName}'`
-  return tmp
+  return isDefaultExport ? `import ${types[0]} from '${libraryName}'` : `import { ${types.join(', ')} } from '${libraryName}'`
 }
 
 export default function component(name: string, jsx: string, dependencies: any = {}, props): any {

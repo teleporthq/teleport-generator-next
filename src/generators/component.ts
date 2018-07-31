@@ -127,6 +127,11 @@ export default class NextComponentGenerator extends ComponentGenerator {
           const propKey = children.replace('$props.', '')
           childrenJSX = `{${propKey}}`
         } else {
+          // override Html default behavior regarding left and right trimming
+          if (children.indexOf(' ') === 0) children = '&nbsp;' + children
+
+          if (children.substr(children.length - 1) === ' ') children += '&nbsp;'
+
           childrenJSX = children
         }
       } else {
