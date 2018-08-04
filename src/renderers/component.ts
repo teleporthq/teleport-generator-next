@@ -1,11 +1,16 @@
 const renderDependency = (libraryName, types) => {
-  const isDefaultExport =
+  const isDefaultImport = types[0].defaultImport || false
+  const componentName = typeof types[0] === 'string' ? types[0] : types[0].type
+
+  const useDefaultImport =
     // local imports are default imports
     ((libraryName.indexOf('../components') === 0 || libraryName.indexOf('./') === 0) && types.length === 1) ||
     // next imports
-    libraryName.indexOf('next/') === 0
+    libraryName.indexOf('next/') === 0 ||
+    // IR defaultImport
+    isDefaultImport
 
-  return isDefaultExport ? `import ${types[0]} from '${libraryName}'` : `import { ${types.join(', ')} } from '${libraryName}'`
+  return useDefaultImport ? `import ${componentName} from '${libraryName}'` : `import { ${types.join(', ')} } from '${libraryName}'`
 }
 
 export default function component(name: string, jsx: string, dependencies: any = {}, props): any {
@@ -20,6 +25,10 @@ export default function component(name: string, jsx: string, dependencies: any =
 ${dependenciesArray.join(`\n`)}
 
 export default class ${name} extends Component {
+  componentDidMount() {
+    
+  }
+  
   render () {
     ${propsString}
     return (

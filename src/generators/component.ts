@@ -73,7 +73,12 @@ export default class NextComponentGenerator extends ComponentGenerator {
           if (!dependencies[elementMapping.source]) dependencies[elementMapping.source] = []
 
           // if the type is not yet in the deps for the current library, add it
-          if (dependencies[elementMapping.source].indexOf(elementMapping.type) < 0) dependencies[elementMapping.source].push(elementMapping.type)
+          if (dependencies[elementMapping.source].indexOf(elementMapping.type) < 0)
+            dependencies[elementMapping.source].push({
+              type: elementMapping.type,
+              // @ts-ignore
+              defaultImport: elementMapping.defaultImport,
+            })
         }
       } else {
         // tslint:disable:no-console
@@ -87,15 +92,11 @@ export default class NextComponentGenerator extends ComponentGenerator {
       if (childrenDependenciesArray.length) {
         childrenDependenciesArray.forEach((childrenDependency) => {
           Object.keys(childrenDependency).forEach((childrenDependencyLibrary) => {
-            console.log(type, source, childrenDependenciesArray)
-            console.log('childrenDependency', childrenDependency, '\n')
-
             if (!dependencies[childrenDependencyLibrary]) dependencies[childrenDependencyLibrary] = []
 
             dependencies[childrenDependencyLibrary] = union(dependencies[childrenDependencyLibrary], childrenDependency[childrenDependencyLibrary])
           })
         })
-        console.log('dep ---', dependencies)
       }
     }
 
@@ -104,7 +105,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
   public renderComponentJSX(content: any, isRoot: boolean = false, styles?: any): any {
     const { source, type, className, ...props } = content
-
+    // this.parseProps(props)
     // retrieve the target type from the lib
     let mapping: any = null
     let mappedType: string = type
@@ -171,6 +172,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
     const props = component.editableProps ? Object.keys(component.editableProps) : null
 
     const result = new FileSet()
+
     result.addFile(`${component.name}.js`, COMPONENTrenderer(name, jsx, dependencies, props))
 
     return result
