@@ -53,16 +53,35 @@ export default class NextComponentGenerator extends ComponentGenerator {
   public computeDependencies(content: any, isPage: boolean): any {
     const dependencies = {}
 
-    const { type, children } = content
+    const { type, children, props } = content
     let { source } = content
 
+    // if no source is specified, default to 'components'
     if (!source) source = 'components'
 
-    if (source && type) {
+    if (type) {
       if (source === 'components') {
-        return {
+        const componentDependencies = {
           [`${isPage ? '../components/' : './'}${type}`]: [type],
         }
+        if (props && props.children && props.children.length > 0 && typeof props.children !== 'string') {
+          const childrenDependenciesArray = props.children.map((child) => this.computeDependencies(child, isPage))
+
+          if (childrenDependenciesArray.length) {
+            childrenDependenciesArray.forEach((childrenDependency) => {
+              Object.keys(childrenDependency).forEach((childrenDependencyLibrary) => {
+                if (!componentDependencies[childrenDependencyLibrary]) componentDependencies[childrenDependencyLibrary] = []
+
+                componentDependencies[childrenDependencyLibrary] = union(
+                  componentDependencies[childrenDependencyLibrary],
+                  childrenDependency[childrenDependencyLibrary]
+                )
+              })
+            })
+          }
+        }
+
+        return componentDependencies
       }
 
       const elementMapping = this.generator.target.map(source, type)
@@ -75,9 +94,9 @@ export default class NextComponentGenerator extends ComponentGenerator {
           // if the type is not yet in the deps for the current library, add it
           if (dependencies[elementMapping.source].indexOf(elementMapping.type) < 0)
             dependencies[elementMapping.source].push({
-              type: elementMapping.type,
               // @ts-ignore
               defaultImport: elementMapping.defaultImport,
+              type: elementMapping.type,
             })
         }
       } else {
@@ -104,8 +123,7 @@ export default class NextComponentGenerator extends ComponentGenerator {
   }
 
   public renderComponentJSX(content: any, isRoot: boolean = false, styles?: any): any {
-    const { source, type, className, ...props } = content
-    // this.parseProps(props)
+    const { type, className, source, ...props } = content
     // retrieve the target type from the lib
     let mapping: any = null
     let mappedType: string = type
@@ -118,15 +136,16 @@ export default class NextComponentGenerator extends ComponentGenerator {
     // there are cases when no children are passed via structure, so the deconstruction will fail
     let children = null
     if (props.children) children = props.children
+
     // remove the children from props
     delete props.children
 
     let childrenJSX: any = []
     if (children && children.length > 0) {
       if (typeof children === 'string') {
-        if (children.indexOf('$props.') >= 0) {
+        if (children.indexOf('$props.') === 0) {
           const propKey = children.replace('$props.', '')
-          childrenJSX = `{${propKey}}`
+          childrenJSX = `{this.props.${propKey}}`
         } else {
           // override Html default behavior regarding left and right trimming
           if (children.indexOf(' ') === 0) children = '&nbsp;' + children
@@ -140,16 +159,22 @@ export default class NextComponentGenerator extends ComponentGenerator {
       }
     }
 
-    if (Array.isArray(childrenJSX)) {
-      childrenJSX = childrenJSX.join('')
-    }
-
     const { name, props: componentProps, ...otherProps } = props // this is to cover img uri props; aka static props
 
     let mappedProps = { ...componentProps, ...otherProps }
 
     if (mapping && typeof mapping.props === 'function') {
       mappedProps = mapping.props(mappedProps)
+    }
+
+    // console.log('mappedProps', mappedProps)
+    if (mappedProps.children) {
+      childrenJSX = mappedProps.children.map((child) => this.renderComponentJSX(child))
+      delete mappedProps.children
+    }
+
+    if (Array.isArray(childrenJSX)) {
+      childrenJSX = childrenJSX.join('')
     }
 
     return JSXrenderer(mappedType, childrenJSX, className, isRoot, styles, mappedProps)
