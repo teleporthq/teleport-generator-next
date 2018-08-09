@@ -65,7 +65,6 @@ export default class NextComponentGenerator extends ComponentGenerator {
           [`${isPage ? '../components/' : './'}${type}`]: [type],
         }
         if (props && props.children && props.children.length > 0 && typeof props.children !== 'string') {
-          console.log(props.children)
           const childrenDependenciesArray = props.children.map((child) => this.computeDependencies(child, isPage))
 
           if (childrenDependenciesArray.length) {
