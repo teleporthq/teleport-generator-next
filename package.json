@@ -1,6 +1,6 @@
 {
   "name": "@teleporthq/teleport-generator-next",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Next code generator for teleportHQ",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
