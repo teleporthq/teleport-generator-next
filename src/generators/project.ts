@@ -40,10 +40,8 @@ export default class ReactProjectGenerator extends ProjectGenerator {
     }
 
     if (targets && targets.web && targets.web.head) {
-      const headString = Object.keys(targets.web.head)
-        .map((tagName) => {
-          const tag = targets.web.head[tagName]
-          const { innerString, attributes } = tag
+      const headString = targets.web.head
+        .map(({ innerString, attributes, tagName }) => {
           const attributesString = attributes ? this.getHtmlHeadItemAttributes(attributes) : ''
 
           if (!innerString) {
