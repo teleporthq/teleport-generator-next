@@ -2,6 +2,10 @@ import styleTransformers from '@teleporthq/teleport-lib-js/dist/transformers/sty
 const { jsstocss } = styleTransformers
 
 function buildStyleJsx(styles) {
+  if (Object.keys(styles).length === 0) {
+    return ''
+  }
+
   return `<style jsx>{\`
     ${jsstocss.stylesheet(styles).css}
   \`}</style>`

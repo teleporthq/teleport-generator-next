@@ -61,11 +61,15 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
     if (type) {
       if (source === 'components') {
+        // manage the case of component being a page
         const componentDependencies = {
           [`${isPage ? '../components/' : './'}${type}`]: [type],
         }
+
         if (props && props.children && props.children.length > 0 && typeof props.children !== 'string') {
-          const childrenDependenciesArray = props.children.map((child) => this.computeDependencies(child, isPage))
+          const childrenDependenciesArray = props.children.map((child) => {
+            return this.computeDependencies(child, isPage)
+          })
 
           if (childrenDependenciesArray.length) {
             childrenDependenciesArray.forEach((childrenDependency) => {
@@ -168,7 +172,6 @@ export default class NextComponentGenerator extends ComponentGenerator {
     }
 
     if (mappedProps.children && Array.isArray(mappedProps.children)) {
-      console.log('mappedProps.children', mappedProps.children)
       childrenJSX = mappedProps.children.map((child) => this.renderComponentJSX(child))
       delete mappedProps.children
     }

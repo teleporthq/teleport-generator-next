@@ -11,7 +11,7 @@ export default function packageRenderer(project: any): any {
     name: project.slug,
     scripts: {
       build: 'next build',
-      dev: 'next',
+      dev: 'node server.js',
       start: 'next start',
     },
     version: project.version || '0.0.1',

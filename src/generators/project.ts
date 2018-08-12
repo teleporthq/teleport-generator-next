@@ -3,6 +3,7 @@ import TeleportGeneratorNext from '../index'
 import packageRenderer from '../renderers/package'
 import NextComponentGenerator from './component'
 import documentPage from '../templates/documentPage'
+import serverFile from '../templates/server'
 
 export default class ReactProjectGenerator extends ProjectGenerator {
   public componentGenerator: NextComponentGenerator
@@ -68,6 +69,25 @@ export default class ReactProjectGenerator extends ProjectGenerator {
       })
     }
 
+    // add routes, if any
+    result.addFile('routes.js', this.getRoutesFile(pages))
+
+    // add the server.js file
+    result.addFile('server.js', serverFile())
+
     return result
+  }
+
+  public getRoutesFile(pages) {
+    const routes = {}
+
+    if (pages) {
+      Object.keys(pages).map((pageName) => {
+        const { url } = pages[pageName]
+        routes['/' + url] = '/' + pageName
+      })
+    }
+
+    return `module.exports = ${JSON.stringify(routes, null, 2)}`
   }
 }
