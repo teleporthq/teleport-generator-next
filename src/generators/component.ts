@@ -156,7 +156,8 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
           if (children.substr(children.length - 1) === ' ') children += '&nbsp;'
 
-          childrenJSX = children
+          // check for < and > and replace with their html entities otherwise
+          childrenJSX = children.replace(/</g, '&lt;').replace(/>/g, '&gt;')
         }
       } else {
         childrenJSX = children.map((child) => this.renderComponentJSX(child))
