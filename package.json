@@ -40,7 +40,6 @@
   },
   "dependencies": {
     "@teleporthq/teleport-lib-js": "0.0.17",
-    "@types/node": "^9.6.0",
     "lodash": "^4.17.10"
   }
 }
