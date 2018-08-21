@@ -1,17 +1,4 @@
 const renderDependency = (libraryName, types) => {
-  // const isDefaultImport = types[0].defaultImport || false
-  // const componentName = typeof types[0] === 'string' ? types[0] : types[0].type
-
-  // const useDefaultImport =
-  //   // local imports are default imports
-  //   ((libraryName.indexOf('../components') === 0 || libraryName.indexOf('./') === 0) && types.length === 1) ||
-  //   // next imports
-  //   libraryName.indexOf('next/') === 0 ||
-  //   // IR defaultImport
-  //   isDefaultImport
-
-  // return useDefaultImport ? `import ${componentName} from '${libraryName}'` : `import { ${types.join(', ')} } from '${libraryName}'`
-
   // there can be only one default import;
   // if multiple, the last one will be used;
   // @todo: discuss how to handle the case where multiple default imports are present
@@ -60,10 +47,6 @@ export default function component(name: string, jsx: string, dependencies: any =
 ${dependenciesArray.join(`\n`)}
 
 export default class ${name} extends Component {
-  componentDidMount() {
-    
-  }
-  
   render () {
     ${propsString}
     return (
