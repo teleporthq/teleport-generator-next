@@ -26,11 +26,9 @@ export default class NextComponentGenerator extends ComponentGenerator {
 
     if (content.style) {
       const className = content.name || findNextIndexedKeyInObject(styles, content.type)
-
       styles[className] = content.style
       delete content.style
       content.className = [className]
-      // @todo: handle platform
     }
 
     // if has children, do the same for children
