@@ -2,7 +2,7 @@ export default function packageRenderer(project: any): any {
   const pkg = {
     author: project.userSlug || 'Unknown',
     dependencies: {
-      next: '^5.1.0',
+      next: '^6.1.1',
       react: '^16.3.0',
       'react-dom': '^16.3.0',
     },
@@ -12,6 +12,7 @@ export default function packageRenderer(project: any): any {
     scripts: {
       build: 'next build',
       dev: 'node server.js',
+      export: 'npm run build && next export',
       start: 'next start',
     },
     version: project.version || '0.0.1',
