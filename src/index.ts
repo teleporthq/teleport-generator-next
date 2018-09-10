@@ -1,6 +1,6 @@
 import { FileSet, ComponentCodeGenerator } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorReact from '@teleporthq/teleport-generator-react'
-import { Project, Component, ComponentGeneratorOptions, ProjectGeneratorOptions } from '@teleporthq/teleport-lib-js/dist/types'
+import { Project, Component, ProjectGeneratorOptions, ComponentGeneratorOptions } from '@teleporthq/teleport-lib-js/dist/types'
 import { NextProjectGeneratorOptions } from './types'
 
 export default class TeleportGeneratorNext extends TeleportGeneratorReact {
