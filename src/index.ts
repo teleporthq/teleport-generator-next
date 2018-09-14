@@ -1,10 +1,10 @@
-import { FileSet, ComponentCodeGenerator } from '@teleporthq/teleport-lib-js'
+import { FileSet } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorReact from '@teleporthq/teleport-generator-react'
 import { Project, Component, ProjectGeneratorOptions, ComponentGeneratorOptions } from '@teleporthq/teleport-lib-js/dist/types'
-import { NextProjectGeneratorOptions } from './types'
+import { NextProjectGeneratorOptions, PlatformOptions, HTMLAttributes } from './types'
 
 export default class TeleportGeneratorNext extends TeleportGeneratorReact {
-  constructor(name?: string, targetName?: string, customRenderers?: { [ley: string]: ComponentCodeGenerator }) {
+  constructor() {
     super('next-generator', 'next')
   }
 
@@ -31,7 +31,7 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     return result
   }
 
-  public generatePackage(project: Project, options?: NextProjectGeneratorOptions): FileSet {
+  public generatePackage(project: Project): FileSet {
     const result = new FileSet()
 
     const pkg = {
@@ -61,27 +61,8 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     const result = new FileSet()
     const { targets } = project
 
-    let headString = false
-
-    if (targets && targets.web && targets.web.head) {
-      headString = targets.web.head
-        .map(({ innerString, attributes, tagName }) => {
-          const attributesString = attributes
-            ? Object.keys(attributes)
-                .map((attributeName) => `${attributeName}="${attributes[attributeName]}"`)
-                .join(' ')
-            : ''
-
-          if (!innerString) {
-            return `<${tagName} ${attributesString}/>\n`
-          } else {
-            return `<${tagName} ${attributesString}>{\`
-              ${innerString}
-            \`}</${tagName}>\n`
-          }
-        })
-        .join('\n')
-    }
+    const metadata = parsePageMetadata(targets as PlatformOptions)
+    const htmlAttrs = parseHTMLTagAttributes(targets as PlatformOptions)
 
     const content = `import Document, { Head, Main, NextScript } from 'next/document'
     export default class MyDocument extends Document {
@@ -91,8 +72,8 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
       }
       render() {
         return (
-          <html>
-            ${headString ? `<Head>${headString}</Head>` : ''}
+          <html ${htmlAttrs}>
+            ${metadata ? `<Head>${metadata}</Head>` : ''}
             <body className="custom_class">
               <Main />
               <NextScript />
@@ -113,25 +94,51 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     const routes = {}
 
     if (project.pages) {
-      Object.keys(project.pages).map((pageName) => {
+      Object.keys(project.pages).forEach((pageName) => {
         let { url } = project.pages[pageName]
-        if (url) {
-          if (url[0] === '/') {
-            url = url.substr(1)
-          }
-        }
+        url = url && url[0] === '/' ? url.substr(1) : url
 
         routes[`/${url || pageName}`] = { page: '/' + pageName }
       })
     }
+
     result.addFile(
       'next.config.js',
       `module.exports = {
-      exportPathMap: function(defaultPathMap) {
-        return ${JSON.stringify(routes, null, 4)}
-      }
-    }`
+        exportPathMap: function(defaultPathMap) {
+          return ${JSON.stringify(routes, null, 4)}
+        }
+      }`
     )
     return result
   }
+}
+
+function parseHTMLTagAttributes(targets: PlatformOptions): string {
+  if (!targets || !targets.web || !targets.web.htmlTag) return ''
+
+  const { attributes } = targets.web.htmlTag
+  return buildAttributesString(attributes as HTMLAttributes)
+}
+
+function parsePageMetadata(targets: PlatformOptions): string {
+  if (!targets || !targets.web || !targets.web.head) return ''
+
+  return targets.web.head
+    .map(({ innerString, attributes, tagName }) => {
+      const attributesString = attributes ? buildAttributesString(attributes as HTMLAttributes) : ''
+
+      if (!innerString) return `<${tagName} ${attributesString}/>\n`
+
+      return `<${tagName} ${attributesString}>{\`${innerString}\`}</${tagName}>\n`
+    })
+    .join('\n')
+}
+
+function buildAttributesString(attributes: HTMLAttributes): string {
+  if (!attributes || typeof attributes !== 'object') return ''
+
+  return Object.keys(attributes)
+    .map((key) => `${key}="${attributes[key]}"`)
+    .join(' ')
 }
