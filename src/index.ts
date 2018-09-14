@@ -1,10 +1,10 @@
-import { FileSet, ComponentCodeGenerator } from '@teleporthq/teleport-lib-js'
+import { FileSet } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorReact from '@teleporthq/teleport-generator-react'
 import { Project, Component, ProjectGeneratorOptions, ComponentGeneratorOptions } from '@teleporthq/teleport-lib-js/dist/types'
-import { NextProjectGeneratorOptions } from './types'
+import { NextProjectGeneratorOptions, PlatformOptions } from './types'
 
 export default class TeleportGeneratorNext extends TeleportGeneratorReact {
-  constructor(name?: string, targetName?: string, customRenderers?: { [ley: string]: ComponentCodeGenerator }) {
+  constructor() {
     super('next-generator', 'next')
   }
 
@@ -61,8 +61,8 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     const result = new FileSet()
     const { targets } = project
 
-    const metadata = this.parsePageMetadata(targets)
-    const htmlAttrs = this.parseHTMLTagAttributes(targets)
+    const metadata = this.parsePageMetadata(targets as PlatformOptions)
+    const htmlAttrs = this.parseHTMLTagAttributes(targets as PlatformOptions)
 
     const content = `import Document, { Head, Main, NextScript } from 'next/document'
     export default class MyDocument extends Document {
@@ -94,55 +94,48 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     const routes = {}
 
     if (project.pages) {
-      Object.keys(project.pages).map((pageName) => {
+      Object.keys(project.pages).forEach((pageName) => {
         let { url } = project.pages[pageName]
-        if (url) {
-          if (url[0] === '/') {
-            url = url.substr(1)
-          }
-        }
+        url = url && url[0] === '/' ? url.substr(1) : url
 
         routes[`/${url || pageName}`] = { page: '/' + pageName }
       })
     }
+
     result.addFile(
       'next.config.js',
       `module.exports = {
-      exportPathMap: function(defaultPathMap) {
-        return ${JSON.stringify(routes, null, 4)}
-      }
-    }`
+        exportPathMap: function(defaultPathMap) {
+          return ${JSON.stringify(routes, null, 4)}
+        }
+      }`
     )
     return result
   }
 
-  private parseHTMLTagAttributes(targets) {
+  private parseHTMLTagAttributes(targets: PlatformOptions): string {
     if (!targets || !targets.web || !targets.web.htmlTag) return ''
 
     const { attributes } = targets.web.htmlTag
     return this.buildAttributesString(attributes)
   }
 
-  private parsePageMetadata(targets) {
-    if (!targets || !targets.web || !targets.web.head) return null
+  private parsePageMetadata(targets: PlatformOptions): string {
+    if (!targets || !targets.web || !targets.web.head) return ''
 
     return targets.web.head
       .map(({ innerString, attributes, tagName }) => {
         const attributesString = attributes ? this.buildAttributesString(attributes) : ''
 
-        if (!innerString) {
-          return `<${tagName} ${attributesString}/>\n`
-        }
+        if (!innerString) return `<${tagName} ${attributesString}/>\n`
 
-        return `<${tagName} ${attributesString}>{\`
-            ${innerString}
-          \`}</${tagName}>\n`
+        return `<${tagName} ${attributesString}>{\`${innerString}\`}</${tagName}>\n`
       })
       .join('\n')
   }
 
-  private buildAttributesString(attributes) {
-    if (!attributes || typeof attributes !== 'object') return null
+  private buildAttributesString(attributes): string {
+    if (!attributes || typeof attributes !== 'object') return ''
 
     return Object.keys(attributes)
       .map((key) => `${key}="${attributes[key]}"`)
