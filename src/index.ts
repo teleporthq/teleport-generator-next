@@ -114,14 +114,14 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
   }
 }
 
-const parseHTMLTagAttributes = (targets: PlatformOptions): string => {
+function parseHTMLTagAttributes(targets: PlatformOptions): string {
   if (!targets || !targets.web || !targets.web.htmlTag) return ''
 
   const { attributes } = targets.web.htmlTag
   return buildAttributesString(attributes as HTMLAttributes)
 }
 
-const parsePageMetadata = (targets: PlatformOptions): string => {
+function parsePageMetadata(targets: PlatformOptions): string {
   if (!targets || !targets.web || !targets.web.head) return ''
 
   return targets.web.head
@@ -135,7 +135,7 @@ const parsePageMetadata = (targets: PlatformOptions): string => {
     .join('\n')
 }
 
-const buildAttributesString = (attributes: HTMLAttributes): string => {
+function buildAttributesString(attributes: HTMLAttributes): string {
   if (!attributes || typeof attributes !== 'object') return ''
 
   return Object.keys(attributes)
