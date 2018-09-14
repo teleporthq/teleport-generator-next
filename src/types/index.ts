@@ -4,7 +4,7 @@ export interface NextProjectGeneratorOptions {
   generateConfigFile?: boolean
 }
 
-interface HTMLAttributes {
+export interface HTMLAttributes {
   attributes: object | null | undefined
 }
 

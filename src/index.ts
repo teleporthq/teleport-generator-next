@@ -1,7 +1,7 @@
 import { FileSet } from '@teleporthq/teleport-lib-js'
 import TeleportGeneratorReact from '@teleporthq/teleport-generator-react'
 import { Project, Component, ProjectGeneratorOptions, ComponentGeneratorOptions } from '@teleporthq/teleport-lib-js/dist/types'
-import { NextProjectGeneratorOptions, PlatformOptions } from './types'
+import { NextProjectGeneratorOptions, PlatformOptions, HTMLAttributes } from './types'
 
 export default class TeleportGeneratorNext extends TeleportGeneratorReact {
   constructor() {
@@ -61,8 +61,8 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     const result = new FileSet()
     const { targets } = project
 
-    const metadata = this.parsePageMetadata(targets as PlatformOptions)
-    const htmlAttrs = this.parseHTMLTagAttributes(targets as PlatformOptions)
+    const metadata = parsePageMetadata(targets as PlatformOptions)
+    const htmlAttrs = parseHTMLTagAttributes(targets as PlatformOptions)
 
     const content = `import Document, { Head, Main, NextScript } from 'next/document'
     export default class MyDocument extends Document {
@@ -112,33 +112,33 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     )
     return result
   }
+}
 
-  private parseHTMLTagAttributes(targets: PlatformOptions): string {
-    if (!targets || !targets.web || !targets.web.htmlTag) return ''
+const parseHTMLTagAttributes = (targets: PlatformOptions): string => {
+  if (!targets || !targets.web || !targets.web.htmlTag) return ''
 
-    const { attributes } = targets.web.htmlTag
-    return this.buildAttributesString(attributes)
-  }
+  const { attributes } = targets.web.htmlTag
+  return buildAttributesString(attributes as HTMLAttributes)
+}
 
-  private parsePageMetadata(targets: PlatformOptions): string {
-    if (!targets || !targets.web || !targets.web.head) return ''
+const parsePageMetadata = (targets: PlatformOptions): string => {
+  if (!targets || !targets.web || !targets.web.head) return ''
 
-    return targets.web.head
-      .map(({ innerString, attributes, tagName }) => {
-        const attributesString = attributes ? this.buildAttributesString(attributes) : ''
+  return targets.web.head
+    .map(({ innerString, attributes, tagName }) => {
+      const attributesString = attributes ? buildAttributesString(attributes as HTMLAttributes) : ''
 
-        if (!innerString) return `<${tagName} ${attributesString}/>\n`
+      if (!innerString) return `<${tagName} ${attributesString}/>\n`
 
-        return `<${tagName} ${attributesString}>{\`${innerString}\`}</${tagName}>\n`
-      })
-      .join('\n')
-  }
+      return `<${tagName} ${attributesString}>{\`${innerString}\`}</${tagName}>\n`
+    })
+    .join('\n')
+}
 
-  private buildAttributesString(attributes): string {
-    if (!attributes || typeof attributes !== 'object') return ''
+const buildAttributesString = (attributes: HTMLAttributes): string => {
+  if (!attributes || typeof attributes !== 'object') return ''
 
-    return Object.keys(attributes)
-      .map((key) => `${key}="${attributes[key]}"`)
-      .join(' ')
-  }
+  return Object.keys(attributes)
+    .map((key) => `${key}="${attributes[key]}"`)
+    .join(' ')
 }
