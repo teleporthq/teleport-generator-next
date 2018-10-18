@@ -1,0 +1,226 @@
+{
+  "project": {
+    "name": "TestProject",
+    "accountSlug": "test-author",
+    "slug": "test-project",
+    "targets": {
+      "web": {
+        "htmlTag": {
+          "attributes": {
+            "lang": "en"
+          }
+        },
+        "head": [{
+            "tagName": "style",
+            "attributes": {},
+            "innerString": "\n          html, body, #__next {\n            margin: 0;\n          }\n          body {\n            font: 1.25rem/1.85 Source Sans Pro, sans-serif;\n            color: #333;\n          }\n          @media (max-width: 600px) {\n            body {\n              font-size: 1.2rem;\n              line-height: 1.6;\n            }\n          }\n\n          a {\n            text-decoration: none;\n            color: inherit;\n          }\n        "
+          },
+          {
+            "tagName": "title",
+            "innerString": "teleportHQ"
+          },
+          {
+            "tagName": "meta",
+            "attributes": {
+              "name": "viewport",
+              "content": "width=device-width, initial-scale=1.0"
+            }
+          },
+          {
+            "tagName": "meta",
+            "attributes": {
+              "name": "description",
+              "content": "teleportHQ is a platform and a suite of open-source tools built for user interface professionals."
+            }
+          },
+          {
+            "tagName": "link",
+            "attributes": {
+              "href": "https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600",
+              "rel": "stylesheet"
+            }
+          },
+          {
+            "tagName": "meta",
+            "attributes": {
+              "name": "theme-color",
+              "content": "#fff"
+            }
+          },
+          {
+            "tagName": "link",
+            "attributes": {
+              "rel": "manifest",
+              "href": "/static/blog/blog/manifest.json"
+            }
+          },
+          {
+            "tagName": "link",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/png",
+              "sizes": "32x32",
+              "href": "/static/blog/blog/assets/favicons/favicon-32x32.png"
+            }
+          },
+          {
+            "tagName": "link",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/png",
+              "sizes": "96x96",
+              "href": "/static/blog/assets/favicons/favicon-96x96.png"
+            }
+          },
+          {
+            "tagName": "link",
+            "attributes": {
+              "rel": "icon",
+              "type": "image/png",
+              "sizes": "16x16",
+              "href": "/static/blog/assets/favicons/favicon-16x16.png"
+            }
+          }
+        ]
+      }
+    },
+    "components": {
+      "TestComponent": {
+        "name": "TestComponent",
+        "content": {
+          "type": "View",
+          "source": "teleport-elements-core",
+          "name": "View1",
+          "style": {
+            "width": "100%",
+            "height": "100%",
+            "flexDirection": "row",
+            "backgroundColor": "magenta"
+          },
+          "children": [{
+            "type": "Image",
+            "source": "teleport-elements-core",
+            "props": {
+              "src": "storage.google.com"
+            }
+          }]
+        }
+      }
+    },
+    "pages": {
+      "TestPage": {
+        "name": "TestPage",
+        "url": "/",
+        "content": {
+          "type": "View",
+          "source": "teleport-elements-core",
+          "name": "View1",
+          "children": [{
+            "type": "TestComponent",
+            "source": "components"
+          }]
+        }
+      },
+      "TestPage1": {
+        "name": "TestPage1",
+        "url": "/test1",
+        "content": {
+          "type": "View",
+          "source": "teleport-elements-core",
+          "name": "View1",
+          "children": [{
+            "type": "TestComponent",
+            "source": "components"
+          }]
+        }
+      }
+    }
+  },
+  "component": {
+    "name": "TestComponent",
+    "content": {
+      "name": "TestComponent",
+      "type": "View",
+      "source": "teleport-elements-core",
+      "style": {
+        "display": "flex"
+      },
+      "children": [{
+          "source": "teleport-elements-core",
+          "type": "Image",
+          "name": "author",
+          "style": {
+            "height": "60px",
+            "width": "60px",
+            "borderRadius": "50%",
+            "border": "5px solid #fff"
+          },
+          "props": {
+            "src": "$props.src",
+            "alt": "$props.name",
+            "children": [{
+              "type": "TestComponent1",
+              "source": "components"
+            }]
+          }
+        },
+        {
+          "type": "TestComponent1",
+          "source": "components"
+        },
+        {
+          "type": "Text",
+          "source": "teleport-elements-core",
+          "name": "Text",
+          "props": {
+            "height": "100%"
+          },
+          "style": {
+            "width": "100%",
+            "height": "$props.height",
+            "flexDirection": "row",
+            "backgroundColor": "pink"
+          }
+        },
+        {
+          "source": "teleport-elements-core",
+          "type": "View",
+          "name": "Author",
+          "style": {
+            "display": "flex",
+            "flexDirection": "column",
+            "justifyContent": "center",
+            "marginLeft": "15px",
+            "lineHeight": "1.2"
+          },
+          "children": [{
+              "source": "teleport-elements-core",
+              "type": "Text",
+              "name": "Name",
+              "children": "$props.name"
+            },
+            {
+              "source": "teleport-elements-core",
+              "type": "Link",
+              "name": "Role",
+              "children": [{
+                "name": "link",
+                "source": "teleport-elements-core",
+                "type": "A",
+                "children": "$props.twitterHandle",
+                "style": {
+                  "&:hover": {
+                    "textDecoration": "underline"
+                  }
+                }
+              }],
+              "props": {
+                "href": "$props.twitterLink"
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

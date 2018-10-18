@@ -13,10 +13,10 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
   }
 
   public generateProject(project: Project, options: ProjectGeneratorOptions & NextProjectGeneratorOptions): FileSet {
-    const { generateDocumentFile, generateConfigFile, generateAllFiles, ...projectGeneratorOptions } = options
+    const { generatePackageFile, generateDocumentFile, generateConfigFile, generateAllFiles, ...projectGeneratorOptions } = options
     const result = this.projectGenerator.generate(project, { ...projectGeneratorOptions, renderer: 'styled-jsx' })
 
-    if (options.generatePackageFile || generateAllFiles) {
+    if (generatePackageFile || generateAllFiles) {
       result.merge(this.generatePackage(project))
     }
 
