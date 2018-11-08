@@ -12,7 +12,7 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
     return this.componentGenerator.generate(component, { ...options, renderer: 'styled-jsx' })
   }
 
-  public generateProject(project: Project, options: ProjectGeneratorOptions & NextProjectGeneratorOptions): FileSet {
+  public generateProject(project: Project, options: ProjectGeneratorOptions & NextProjectGeneratorOptions = { generateAllFiles: true }): FileSet {
     const { generateDocumentFile, generateConfigFile, generateAllFiles, ...projectGeneratorOptions } = options
     const result = this.projectGenerator.generate(project, { ...projectGeneratorOptions, renderer: 'styled-jsx' })
 
@@ -46,11 +46,11 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
       name: project.slug,
       scripts: {
         build: 'next build',
-        dev: 'node server.js',
+        dev: 'next dev',
         export: 'npm run build && next export',
         start: 'next start',
       },
-      version: '0.0.1',
+      version: '0.0.2',
     }
 
     result.addFile('package.json', JSON.stringify(pkg, null, 2))
@@ -97,8 +97,8 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
       Object.keys(project.pages).forEach((pageName) => {
         let { url } = project.pages[pageName]
         url = url && url[0] === '/' ? url.substr(1) : url
-
-        routes[`/${url || pageName}`] = { page: '/' + pageName }
+        const targetPageName = pageName || 'index'
+        routes[`/${url}`] = { page: `/${targetPageName[0].toUpperCase()}${targetPageName.substring(1)}` }
       })
     }
 
@@ -110,6 +110,7 @@ export default class TeleportGeneratorNext extends TeleportGeneratorReact {
         }
       }`
     )
+
     return result
   }
 }
